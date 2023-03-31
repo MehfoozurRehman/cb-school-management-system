@@ -1,30 +1,30 @@
 import express from 'express'
 import mongoose from 'mongoose'
+import SchoolsRouter from './routes/schools'
 
+
+// api config
 const app = express()
 
+// middleware
+app.use(express.json())
 
+// db config
 mongoose.connect(import.meta.env.VITE_MONGO_URL, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
 })
 
+// api routes
 app.get('/api/', (req, res) => {
     res.json({ message: 'Hello World' })
 })
 
-const API_ROUTES = import.meta.glob("/src/api/routes/**/*.(js|ts)", {
-    eager: true
-})
-
-Object.keys(API_ROUTES).map((key) => {
-    const path = key.replace('/src/api/routes/', '/api/').replace('.js', '').toLowerCase()
-    app.use(path, API_ROUTES[key].default)
-})
-
+app.use('/api/schools', SchoolsRouter)
 
 app.get('/api/*', (req, res) => {
     res.status(404).json({ message: 'Not Found' })
 })
 
+// export
 export const handler = app
