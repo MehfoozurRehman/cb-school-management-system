@@ -1,26 +1,27 @@
-import { ViteAliases } from "vite-aliases";
+
 import { ViteWebfontDownload } from "vite-plugin-webfont-dl";
 import { chunkSplitPlugin } from "vite-plugin-chunk-split";
 import { defineConfig } from "vite";
-import preload from "vite-plugin-preload";
 import react from "@vitejs/plugin-react";
-import removeConsole from "vite-plugin-remove-console";
 import viteCompression from "vite-plugin-compression";
 import viteImagemin from "vite-plugin-imagemin";
 import mix from 'vite-plugin-mix'
+import path from "path";
 
 export default defineConfig({
+  resolve: {
+    alias: {
+      "@router": path.resolve(__dirname, "src/router"),
+      "@components": path.resolve(__dirname, "src/components"),
+      "@assets": path.resolve(__dirname, "src/assets"),
+    },
+  },
   plugins: [
     react(),
-    preload(),
-    removeConsole(),
     chunkSplitPlugin(),
     ViteWebfontDownload(),
     mix.default({
       handler:"src/api/handler.js",
-    }),
-    ViteAliases({
-      useConfig: true,
     }),
     viteCompression({
       algorithm: "brotliCompress",

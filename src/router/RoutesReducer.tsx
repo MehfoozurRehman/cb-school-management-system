@@ -31,14 +31,14 @@ export default function RoutesReducer(
     segments.reduce((parent, segment, index) => {
       const path = segment.replace(/index|\./g, "");
       const root = index === 0;
-      const leaf = index === segments.length - 1 && segments.length > 1;
+      const leaf = index === segments?.length - 1 && segments?.length > 1;
       const node = !root && !leaf;
       const insert = /^\w|\//.test(path) ? "unshift" : "push";
 
       if (root) {
         const dynamic = path.startsWith("[") || path === "*";
         if (dynamic) return parent;
-        const last = segments.length === 1;
+        const last = segments?.length === 1;
         if (last) {
           routes.push({ path, ...route });
           return parent;
@@ -57,7 +57,7 @@ export default function RoutesReducer(
               children: [],
             });
         return (
-          found || current?.[insert === "unshift" ? 0 : current.length - 1]
+          found || current?.[insert === "unshift" ? 0 : current?.length - 1]
         );
       }
 
