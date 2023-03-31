@@ -47,6 +47,9 @@
             ],
             "@about/*": [
                 "src/screens/about/*"
+            ],
+            "@api/*": [
+                "src/api/*"
             ]
         }
     },
