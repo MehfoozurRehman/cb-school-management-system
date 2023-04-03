@@ -9,7 +9,6 @@ lerna-debug.log*
 
 node_modules
 dist
-build
 *.local
 
 # Editor directories and files
@@ -24,4 +23,3 @@ build
 *.sln
 *.sw?
 .yarn
-.env

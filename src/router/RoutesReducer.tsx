@@ -1,5 +1,5 @@
 import Action from "./Action";
-import ErrorBoundary from "./ErrorBoundary";
+import ErrorBoundaryLoad from "./ErrorBoundary";
 import Loader from "./Loader";
 import { lazy } from "react";
 
@@ -10,12 +10,20 @@ export default function RoutesReducer(
   return Object.keys(eagers === null ? lazys : eagers).reduce((routes, key) => {
     const module = lazys[key];
 
+    const Component = eagers === null ? lazy(module) : eagers[key].default;
+    const loader = eagers === null ? Loader(module) : eagers[key].loader;
+    const action = eagers === null ? Action(module) : eagers[key].action;
+    const ErrorBoundary =
+      eagers === null ? ErrorBoundaryLoad(module) : eagers[key].Error;
+
+    const preload = eagers === null ? module : null;
+
     const route = {
-      Component: eagers === null ? lazy(module) : eagers[key].default,
-      loader: Loader(module),
-      action: Action(module),
-      ErrorBoundary: ErrorBoundary(module),
-      preload: module,
+      Component,
+      loader,
+      action,
+      ErrorBoundary,
+      preload,
     };
 
     const segments = key
@@ -31,14 +39,14 @@ export default function RoutesReducer(
     segments.reduce((parent, segment, index) => {
       const path = segment.replace(/index|\./g, "");
       const root = index === 0;
-      const leaf = index === segments?.length - 1 && segments?.length > 1;
+      const leaf = index === segments.length - 1 && segments.length > 1;
       const node = !root && !leaf;
       const insert = /^\w|\//.test(path) ? "unshift" : "push";
 
       if (root) {
         const dynamic = path.startsWith("[") || path === "*";
         if (dynamic) return parent;
-        const last = segments?.length === 1;
+        const last = segments.length === 1;
         if (last) {
           routes.push({ path, ...route });
           return parent;
@@ -57,7 +65,7 @@ export default function RoutesReducer(
               children: [],
             });
         return (
-          found || current?.[insert === "unshift" ? 0 : current?.length - 1]
+          found || current?.[insert === "unshift" ? 0 : current.length - 1]
         );
       }
 
